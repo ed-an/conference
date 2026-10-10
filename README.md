@@ -18,13 +18,22 @@ shouldn’t have to or might not be able to check out the code and make the chan
 content of the website with that system
 
 ## TO DO
-Think of an event name
+Think of an event name 
+
 Create a homepage
+
 Create location info page
+
 Create food info page
+
 Create code of conduct
+
 Add speakers
+
 Create schedule page
+
 Create CMS project
+
 Migrate content to CMS
+
 Source content from CMS
