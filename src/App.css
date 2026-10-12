@@ -1,0 +1,57 @@
+.app {
+  width: min(100% - 2rem, 72rem);
+  margin-inline: auto;
+}
+
+.card {
+  padding: clamp(2rem, 6vw, 5rem);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+}
+
+.eyebrow {
+  color: #a8b3ff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+h1 {
+  max-width: 12ch;
+  margin: 0.7rem 0 1rem;
+  font-size: clamp(2.7rem, 8vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+}
+
+p {
+  max-width: 38rem;
+  margin-bottom: 2rem;
+  color: #c8cad5;
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+code {
+  color: #ffffff;
+}
+
+a {
+  display: inline-flex;
+  padding: 0.8rem 1.1rem;
+  border-radius: 999px;
+  background: #8b9bff;
+  color: #10111a;
+  font-weight: 750;
+  text-decoration: none;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+a:hover {
+  transform: translateY(-2px);
+  background: #aab4ff;
+}
