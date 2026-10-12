@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "node --test --experimental-strip-types tests/models.test.ts tests/data.test.ts",
+    "test": "node --test --experimental-strip-types tests/models.test.ts tests/data.test.ts tests/tokens.test.ts",
     "preview": "vite preview"
   },
   "dependencies": {
