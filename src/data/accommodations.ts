@@ -1,0 +1,78 @@
+import type { Accommodation } from '../models/accommodation.ts'
+import { accommodationIds } from './ids.ts'
+import { slug, url } from './values.ts'
+
+export const accommodations = [
+  {
+    id: accommodationIds[0],
+    slug: slug('hotel-horizonte-paulista'),
+    name: 'Hotel Horizonte Paulista',
+    description: 'Hotel confortável com acesso rápido ao local do evento.',
+    category: 'hotel',
+    status: 'available',
+    address: {
+      street: 'Rua das Oficinas, 120',
+      city: 'São Paulo',
+      region: 'SP',
+      postalCode: '01310-000',
+      country: 'Brasil',
+    },
+    websiteUrl: url('https://hotel-horizonte.example.com'),
+    bookingUrl: url('https://hotel-horizonte.example.com/reservas'),
+    priceRange: { currency: 'BRL', minimum: 360, maximum: 520, unit: 'night' },
+    distanceFromVenue: '450 m',
+    notes: 'Café da manhã e internet incluídos na diária.',
+  },
+  {
+    id: accommodationIds[1],
+    slug: slug('hostel-estacao-verde'),
+    name: 'Hostel Estação Verde',
+    description: 'Hospedagem econômica próxima ao metrô e a serviços essenciais.',
+    category: 'hostel',
+    status: 'limited',
+    address: {
+      street: 'Alameda das Palmeiras, 48',
+      city: 'São Paulo',
+      region: 'SP',
+      country: 'Brasil',
+    },
+    websiteUrl: url('https://estacao-verde.example.com'),
+    priceRange: { currency: 'BRL', minimum: 110, maximum: 190, unit: 'night' },
+    distanceFromVenue: '1,2 km',
+  },
+  {
+    id: accommodationIds[2],
+    slug: slug('studios-vista-centro'),
+    name: 'Studios Vista Centro',
+    description: 'Apartamentos compactos com cozinha para estadias independentes.',
+    category: 'apartment',
+    status: 'available',
+    address: {
+      street: 'Rua do Mirante, 305',
+      city: 'São Paulo',
+      region: 'SP',
+      postalCode: '01311-000',
+      country: 'Brasil',
+    },
+    bookingUrl: url('https://studios-vista.example.com/reservas'),
+    priceRange: { currency: 'BRL', minimum: 280, maximum: 430, unit: 'night' },
+    distanceFromVenue: '900 m',
+    notes: 'Check-in autônomo disponível durante todo o dia.',
+  },
+  {
+    id: accommodationIds[3],
+    slug: slug('pousada-jardim-urbano'),
+    name: 'Pousada Jardim Urbano',
+    description: 'Pousada pequena em uma rua tranquila, com atendimento próximo.',
+    category: 'other',
+    status: 'unavailable',
+    address: {
+      street: 'Travessa das Acácias, 17',
+      city: 'São Paulo',
+      region: 'SP',
+      country: 'Brasil',
+    },
+    distanceFromVenue: '2 km',
+    notes: 'Sem disponibilidade para a noite do evento.',
+  },
+] satisfies readonly Accommodation[]
