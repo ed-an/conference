@@ -6,7 +6,7 @@ This roadmap orders delivery in deliberately small phases. Each phase should be 
 
 - [x] **Phase 01 — Name the event:** Choose the conference name, one-sentence description, date, and city.
 - [x] **Phase 02 — Define content models:** Add TypeScript models for event details, speakers, talks, schedule entries, lodging, and food.
-- [ ] **Phase 03 — Seed local content:** Create typed local sample data covering every content model.
+- [x] **Phase 03 — Seed local content:** Create typed local sample data covering every content model.
 - [ ] **Phase 04 — Establish design tokens:** Define the core color, typography, spacing, radius, and focus styles in CSS.
 - [ ] **Phase 05 — Add the application shell:** Create the shared header, primary navigation, main-content landmark, and footer.
 - [ ] **Phase 06 — Add routing:** Select and install a router, define named routes, and support direct navigation.
