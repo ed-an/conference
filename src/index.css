@@ -30,14 +30,15 @@ body {
 
 #root {
   min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding-block: var(--space-12);
 }
 
 button,
 a {
   font: inherit;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 :focus-visible {
