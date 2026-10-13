@@ -112,9 +112,9 @@ test('keeps the token source component agnostic', () => {
   assert.deepEqual(selectors, [':root'])
 })
 
-test('uses the canonical dark surface and React primary only once', () => {
-  assert.equal((css.match(/#0f111a/gi) ?? []).length, 1)
-  assert.equal((css.match(/#61dafb/gi) ?? []).length, 1)
+test('uses the canonical light surface and purple primary', () => {
+  assert.equal((css.match(/#ffffff/gi) ?? []).length, 4)
+  assert.equal((css.match(/#6842d8/gi) ?? []).length, 1)
 })
 
 test('meets WCAG contrast targets for semantic color pairs', () => {
