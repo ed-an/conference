@@ -1,20 +1,21 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useReducer, useRef, type ReactNode } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { events } from '../data'
 import { homeRoute, primaryNavigationRoutes, utilityNavigationRoutes } from '../routing/routes'
+import { menuOpenReducer } from './menuState'
 
 type AppShellProps = { children: ReactNode }
 const event = events[0]
 
 export function AppShell({ children }: AppShellProps) {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, dispatchMenu] = useReducer(menuOpenReducer, false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     if (!menuOpen) return
     const closeOnEscape = (keyboardEvent: KeyboardEvent) => {
       if (keyboardEvent.key === 'Escape') {
-        setMenuOpen(false)
+        dispatchMenu('escape')
         menuButtonRef.current?.focus()
       }
     }
@@ -22,7 +23,7 @@ export function AppShell({ children }: AppShellProps) {
     return () => document.removeEventListener('keydown', closeOnEscape)
   }, [menuOpen])
 
-  const closeMenu = () => setMenuOpen(false)
+  const closeMenu = () => dispatchMenu('navigate')
 
   return (
     <div className="site-shell">
@@ -40,7 +41,7 @@ export function AppShell({ children }: AppShellProps) {
             aria-expanded={menuOpen}
             aria-controls="primary-navigation"
             aria-label={menuOpen ? 'Fechar menu principal' : 'Abrir menu principal'}
-            onClick={() => setMenuOpen((open) => !open)}
+            onClick={() => dispatchMenu('toggle')}
           >
             <span className="menu-button__lines" aria-hidden="true"><span /><span /><span /></span>
           </button>
