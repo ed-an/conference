@@ -2,15 +2,23 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
 
-import { navigationItems } from '../src/layout/navigation.ts'
+import { primaryNavigationRoutes, utilityNavigationRoutes } from '../src/routing/routes.ts'
 
 const shell = readFileSync(new URL('../src/layout/AppShell.tsx', import.meta.url), 'utf8')
 
-test('defines the agreed anchor navigation in pt-BR', () => {
-  assert.deepEqual(navigationItems, [
-    { id: 'inicio', label: 'Início' },
-    { id: 'palestrantes', label: 'Palestrantes' },
-    { id: 'programacao', label: 'Programação' },
+test('defines the agreed primary route navigation in pt-BR', () => {
+  assert.deepEqual(primaryNavigationRoutes.map(({ path, label }) => ({ path, label })), [
+    { path: '/', label: 'Início' },
+    { path: '/speakers', label: 'Palestrantes' },
+    { path: '/schedule', label: 'Programação' },
+  ])
+  assert.deepEqual(utilityNavigationRoutes.map(({ path }) => path), [
+    '/location',
+    '/hotels',
+    '/food',
+    '/code-of-conduct',
+    '/speakers',
+    '/schedule',
   ])
 })
 
@@ -25,6 +33,14 @@ test('provides semantic landmarks and a working skip-link target', () => {
 test('exposes accessible state for mobile and active navigation', () => {
   assert.match(shell, /aria-expanded=\{menuOpen\}/)
   assert.match(shell, /aria-controls="primary-navigation"/)
-  assert.match(shell, /aria-current=\{activeSection === id \? 'location' : undefined\}/)
+  assert.match(shell, /<NavLink to=\{path\} end=\{path === '\/'\}/)
+  assert.match(shell, /onClick=\{closeMenu\}/)
   assert.match(shell, /keyboardEvent\.key === 'Escape'/)
+})
+
+test('uses router links instead of the previous section fragments', () => {
+  assert.match(shell, /<Link className="brand"/)
+  assert.match(shell, /primaryNavigationRoutes\.map/)
+  assert.match(shell, /utilityNavigationRoutes\.map/)
+  assert.doesNotMatch(shell, /href=\{?`?#/)
 })
