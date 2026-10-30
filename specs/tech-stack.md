@@ -7,6 +7,7 @@
 | UI | React | Functional components and hooks |
 | Language | TypeScript | Strictly typed application code |
 | Build tooling | Vite | Local development and production builds |
+| Routing | React Router | Centralized typed routes through `react-router-dom` |
 | Styling | CSS | Plain CSS is the current baseline; shared tokens should use custom properties |
 | Code quality | ESLint | Run through the existing `npm run lint` script |
 | Package manager | npm | `package-lock.json` is the source of dependency resolution |
@@ -26,7 +27,7 @@
 
 ### Routing
 
-The site requires client-side routing for its multi-page experience. Select the routing library in the routing phase and record the decision before installing it. The solution must support direct links, a not-found page, active navigation states, and deployment fallback configuration.
+The site uses React Router for its client-side multi-page experience. Route paths and navigation metadata are defined in one typed local contract. Known routes support direct links and active navigation states; the not-found page and deployment fallback configuration remain in their roadmap phases.
 
 ### Content management
 
