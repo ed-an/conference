@@ -7,6 +7,7 @@ import { HomePage } from '../home/HomePage'
 import { LocationPage } from '../location/LocationPage'
 import { SchedulePage } from '../schedule/SchedulePage'
 import { SpeakersPage } from '../speakers/SpeakersPage'
+import { NotFoundPage } from './NotFoundPage'
 import { appRoutes, type RouteId } from './routes'
 
 const routeElements: Record<RouteId, ReactElement> = {
@@ -29,6 +30,7 @@ export function AppRoutes() {
           element={routeElements[route.id]}
         />
       ))}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   )
 }

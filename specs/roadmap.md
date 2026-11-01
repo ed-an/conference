@@ -10,7 +10,7 @@ This roadmap orders delivery in deliberately small phases. Each phase should be 
 - [x] **Phase 04 — Establish design tokens:** Define the core color, typography, spacing, radius, and focus styles in CSS.
 - [x] **Phase 05 — Add the application shell:** Create the shared header, primary navigation, main-content landmark, and footer.
 - [x] **Phase 06 — Add routing:** Select and install a router, define named routes, and support direct navigation.
-- [ ] **Phase 07 — Handle unknown routes:** Add a useful not-found page with a route back home.
+- [x] **Phase 07 — Handle unknown routes:** Add a useful not-found page with a route back home.
 
 ## Essential event information
 

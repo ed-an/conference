@@ -24,8 +24,12 @@ main > section { scroll-margin-top: 6rem; }
 h1, h2, p { margin-top: 0; }
 h1 { max-width: 10ch; margin-bottom: var(--space-6); color: var(--color-on-surface); font-size: var(--type-display-large-size); font-weight: var(--type-display-large-weight); line-height: var(--type-display-large-line-height); letter-spacing: var(--type-display-large-letter-spacing); }
 h2 { margin-bottom: var(--space-4); font-size: var(--type-headline-large-size); line-height: var(--type-headline-large-line-height); }
-.intro-section > p:last-child, .route-placeholder > p:last-child { max-width: var(--layout-copy-max); margin-bottom: 0; color: var(--color-on-surface-variant); font-size: var(--type-body-large-size); line-height: var(--type-body-large-line-height); }
-.route-placeholder { min-height: min(36rem, calc(100vh - 5rem)); display: grid; align-content: center; padding-block: var(--space-20); }
+.intro-section > p:last-child, .route-placeholder > p:last-child, .not-found-page > p:not(.eyebrow) { max-width: var(--layout-copy-max); color: var(--color-on-surface-variant); font-size: var(--type-body-large-size); line-height: var(--type-body-large-line-height); }
+.intro-section > p:last-child, .route-placeholder > p:last-child { margin-bottom: 0; }
+.route-placeholder, .not-found-page { min-height: min(36rem, calc(100vh - 5rem)); display: grid; align-content: center; justify-items: start; padding-block: var(--space-20); }
+.not-found-page > p:not(.eyebrow) { margin-bottom: var(--space-8); }
+.primary-action { display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: var(--space-3) var(--space-6); border-radius: var(--radius-small); background: var(--color-primary); color: var(--color-on-primary); font-weight: var(--type-label-large-weight); text-decoration: none; }
+.primary-action:hover { background: var(--color-primary-container); color: var(--color-on-primary-container); }
 .site-footer { margin-top: var(--space-16); background: var(--color-on-surface); color: var(--color-surface); }
 .site-footer__inner { display: grid; gap: var(--space-10); padding-block: var(--space-16) var(--space-8); }
 .brand--footer { color: var(--color-surface); }
