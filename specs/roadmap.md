@@ -14,7 +14,7 @@ This roadmap orders delivery in deliberately small phases. Each phase should be 
 
 ## Essential event information
 
-- [ ] **Phase 08 — Build the home hero:** Show the event name, description, date, location, and primary call to action.
+- [x] **Phase 08 — Build the home hero:** Show the event name, description, date, location, and primary call to action.
 - [ ] **Phase 09 — Build the event overview:** Explain the conference purpose and intended audience on the home page.
 - [ ] **Phase 10 — Build the location page:** Add venue address, access guidance, and transport information.
 - [ ] **Phase 11 — Add hotel information:** Present accommodation options with practical comparison details.
