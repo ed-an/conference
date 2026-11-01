@@ -31,7 +31,7 @@ export function HomePage() {
 
       <section id="inscricao" className="registration" aria-labelledby="registration-title">
         <div className="registration__intro">
-          <p className="eyebrow">Garanta seu lugar</p>
+          <p className="eyebrow">Comece sua inscrição</p>
           <h2 id="registration-title">Inscreva-se para viver essa experiência</h2>
           <p>Preencha seus dados para se preparar. O envio da inscrição ainda não está disponível.</p>
         </div>
