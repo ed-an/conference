@@ -60,7 +60,7 @@ test('separates primary and utility navigation without losing known destinations
 
 test('renders the page associated with every known route', () => {
   const expectedPages = [
-    ['/', 'Ideias que movem a web.'],
+    ['/', 'React Conference'],
     ['/location', 'Localização'],
     ['/hotels', 'Hospedagem'],
     ['/food', 'Alimentação'],
