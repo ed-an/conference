@@ -24,7 +24,7 @@ function inputWithId(page: string, id: string) {
 test('presents the essential React Conference information and registration action', () => {
   const page = renderHome()
 
-  assert.match(page, /<h1[^>]*>React Conference 2026<\/h1>/)
+  assert.match(page, /<h1[^>]*>React Conference<\/h1>/)
   assert.match(page, /frontend.*React/i)
   assert.match(page, /12 de dezembro de 2026/)
   assert.match(page, /S[aã]o Paulo/)
@@ -61,4 +61,3 @@ test('offers an accessible registration form without claiming an unsupported sub
   assert.match(page, /envio.*ainda não está disponível/i)
   assert.doesNotMatch(page, /inscrição (?:concluída|confirmada|realizada)/i)
 })
-

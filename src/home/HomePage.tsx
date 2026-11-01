@@ -1,13 +1,11 @@
-import { events } from '../data/events'
-
-const event = events[0]
+import { currentEvent } from '../data/events'
 
 const eventDate = new Intl.DateTimeFormat('pt-BR', {
   day: 'numeric',
   month: 'long',
   year: 'numeric',
-  timeZone: event.timeZone,
-}).format(new Date(event.startDate))
+  timeZone: currentEvent.timeZone,
+}).format(new Date(currentEvent.startDate))
 
 export function HomePage() {
   return (
@@ -15,8 +13,8 @@ export function HomePage() {
       <section className="hero" aria-labelledby="home-title">
         <div className="hero__content">
           <p className="eyebrow">Uma experiência para quem move a web</p>
-          <h1 id="home-title">{event.name}</h1>
-          <p className="hero__description">{event.description}</p>
+          <h1 id="home-title">{currentEvent.name}</h1>
+          <p className="hero__description">{currentEvent.description}</p>
           <dl className="hero__details" aria-label="Informações do evento">
             <div>
               <dt>Data</dt>
@@ -24,7 +22,7 @@ export function HomePage() {
             </div>
             <div>
               <dt>Local</dt>
-              <dd>{event.venueName} · {event.city}</dd>
+              <dd>{currentEvent.venueName} · {currentEvent.city}</dd>
             </div>
           </dl>
           <a className="primary-action" href="#inscricao">Inscrever</a>

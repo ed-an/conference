@@ -1,11 +1,10 @@
 import { useEffect, useReducer, useRef, type ReactNode } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { events } from '../data'
+import { currentEvent } from '../data'
 import { homeRoute, primaryNavigationRoutes, utilityNavigationRoutes } from '../routing/routes'
 import { menuOpenReducer } from './menuState'
 
 type AppShellProps = { children: ReactNode }
-const event = events[0]
 
 export function AppShell({ children }: AppShellProps) {
   const [menuOpen, dispatchMenu] = useReducer(menuOpenReducer, false)
@@ -32,7 +31,7 @@ export function AppShell({ children }: AppShellProps) {
         <div className="site-header__inner">
           <Link className="brand" to={homeRoute.path} onClick={closeMenu}>
             <span className="brand__mark" aria-hidden="true">R</span>
-            <span>{event.name}</span>
+            <span>{currentEvent.name}</span>
           </Link>
           <button
             ref={menuButtonRef}
@@ -64,7 +63,7 @@ export function AppShell({ children }: AppShellProps) {
           <div>
             <Link className="brand brand--footer" to={homeRoute.path} onClick={closeMenu}>
               <span className="brand__mark" aria-hidden="true">R</span>
-              <span>{event.name}</span>
+              <span>{currentEvent.name}</span>
             </Link>
             <p>Conectando pessoas que constroem a web.</p>
           </div>
@@ -76,7 +75,7 @@ export function AppShell({ children }: AppShellProps) {
               ))}
             </ul>
           </nav>
-          <p className="copyright">© 2026 {event.name}. Todos os direitos reservados.</p>
+          <p className="copyright">© 2026 {currentEvent.name}. Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>
