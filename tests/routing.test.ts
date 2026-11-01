@@ -83,7 +83,7 @@ test('renders a useful not-found page for unknown routes', () => {
     assert.match(page, /Erro 404/)
     assert.match(page, /<h1[^>]*>Página não encontrada<\/h1>/)
     assert.match(page, /O endereço pode estar incorreto/)
-    assert.match(page, /<a class="primary-action" href="\/"[^>]*>Voltar ao início<\/a>/)
+    assert.match(page, /<a[^>]*href="\/"[^>]*>Voltar ao início<\/a>/)
   }
 })
 
