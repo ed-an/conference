@@ -76,14 +76,21 @@ test('renders the page associated with every known route', () => {
   }
 })
 
-test('does not render a page for an unknown route before Phase 07', () => {
-  const originalWarn = console.warn
-  console.warn = () => undefined
-  try {
-    assert.equal(renderRoute('/unknown'), '')
-  } finally {
-    console.warn = originalWarn
+test('renders a useful not-found page for unknown routes', () => {
+  for (const path of ['/unknown', '/unknown/nested']) {
+    const page = renderRoute(path)
+
+    assert.match(page, /Erro 404/)
+    assert.match(page, /<h1[^>]*>Página não encontrada<\/h1>/)
+    assert.match(page, /O endereço pode estar incorreto/)
+    assert.match(page, /<a class="primary-action" href="\/"[^>]*>Voltar ao início<\/a>/)
   }
+})
+
+test('keeps the not-found fallback outside known and navigable routes', () => {
+  assert.equal(appRoutes.some(({ path }) => path === '*'), false)
+  assert.equal(primaryNavigationRoutes.some(({ path }) => path === '*'), false)
+  assert.equal(utilityNavigationRoutes.some(({ path }) => path === '*'), false)
 })
 
 test('adds React Router as the only dependency beyond the React foundation', () => {
