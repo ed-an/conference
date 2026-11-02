@@ -11,6 +11,9 @@
 | Styling | CSS | Plain CSS is the current baseline; shared tokens should use custom properties |
 | Code quality | ESLint | Run through the existing `npm run lint` script |
 | Package manager | npm | `package-lock.json` is the source of dependency resolution |
+| API | NestJS | Public registration and protected administrative endpoints |
+| Database access | Prisma | Typed PostgreSQL access and versioned migrations |
+| Database | PostgreSQL | People, events, consent records, and registrations |
 
 ## Architecture rules
 
@@ -52,6 +55,10 @@ Add the smallest testing stack needed by the feature under construction:
 - End-to-end smoke tests for primary visitor journeys once all routes exist
 
 Record selected tools here when they are introduced. Tests should validate user-visible behavior rather than implementation details.
+
+Node's test runner remains responsible for the original domain and server-rendered component tests. Vitest, Testing Library, Supertest, and jsdom cover interactive React behavior and the NestJS HTTP boundary. PostgreSQL integration tests run when `TEST_DATABASE_URL` is defined.
+
+Tests normally assert behavior through public interfaces. PostgreSQL adapter integration tests may inspect database state only for persistence invariants that are not observable through HTTP, such as proving that a failed transaction leaves no partial `Person` or `Registration` record.
 
 ## Quality gates
 

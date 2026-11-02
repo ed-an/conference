@@ -37,3 +37,11 @@ Create CMS project
 Migrate content to CMS
 
 Source content from CMS
+
+## Desenvolvimento local
+
+Instale as dependências e copie `.env.example` para `.env`, substituindo o token administrativo por um segredo forte. Inicie o PostgreSQL com `docker compose up -d postgres`, aplique `npm run prisma:migrate` e execute a API com `npm run dev:api`. Em outro terminal, execute `npm run dev` para abrir o frontend.
+
+O formulário público envia dados para `VITE_API_URL`. A rota `/admin/registrations` solicita o token administrativo e o mantém somente na memória da página; ele não deve ser configurado como variável `VITE_*` nem incluído no bundle.
+
+Os gates locais são `npm test`, `npm run lint`, `npm run build` e `npm run typecheck:api`. O teste PostgreSQL é um gate separado e nunca é ignorado silenciosamente: defina `TEST_DATABASE_URL` para um banco exclusivo de testes e execute `npm run test:integration`.

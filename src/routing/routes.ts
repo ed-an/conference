@@ -41,6 +41,12 @@ export const appRoutes = [
     label: 'Programação',
     primary: true,
   },
+  {
+    id: 'adminRegistrations',
+    path: '/admin/registrations',
+    label: 'Administrar inscrições',
+    primary: false,
+  },
 ] as const
 
 export type AppRoute = (typeof appRoutes)[number]
@@ -48,4 +54,4 @@ export type RouteId = AppRoute['id']
 
 export const homeRoute = appRoutes[0]
 export const primaryNavigationRoutes = appRoutes.filter((route) => route.primary)
-export const utilityNavigationRoutes = appRoutes.filter((route) => route.id !== 'home')
+export const utilityNavigationRoutes = appRoutes.filter((route) => route.id !== 'home' && route.id !== 'adminRegistrations')

@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
 import test, { after } from 'node:test'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -20,10 +19,6 @@ const { AppRoutes } = await vite.ssrLoadModule('/src/routing/AppRoutes.tsx') as 
   AppRoutes: typeof import('../src/routing/AppRoutes.tsx').AppRoutes
 }
 
-const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as {
-  dependencies: Record<string, string>
-}
-
 function renderRoute(path: string) {
   return renderToStaticMarkup(
     createElement(MemoryRouter, { initialEntries: [path] }, createElement(AppRoutes)),
@@ -41,11 +36,11 @@ test('defines each agreed route exactly once', () => {
     '/code-of-conduct',
     '/speakers',
     '/schedule',
+    '/admin/registrations',
   ])
   assert.equal(new Set(paths).size, paths.length)
   assert.equal(homeRoute.path, '/')
 })
-
 test('separates primary and utility navigation without losing known destinations', () => {
   assert.deepEqual(primaryNavigationRoutes.map(({ id }) => id), ['home', 'speakers', 'schedule'])
   assert.deepEqual(utilityNavigationRoutes.map(({ id }) => id), [
@@ -67,12 +62,13 @@ test('renders the page associated with every known route', () => {
     ['/code-of-conduct', 'Código de conduta'],
     ['/speakers', 'Palestrantes'],
     ['/schedule', 'Programação'],
+    ['/admin/registrations', 'Inscrições do evento'],
   ] as const
 
   for (const [path, title] of expectedPages) {
     const page = renderRoute(path)
     assert.match(page, new RegExp(`<h1[^>]*>${title}<\\/h1>`))
-    if (path !== '/') assert.match(page, /ser[aã]o? publicad|será apresentad/)
+    if (path !== '/' && path !== '/admin/registrations') assert.match(page, /ser[aã]o? publicad|será apresentad/)
   }
 })
 
@@ -91,12 +87,4 @@ test('keeps the not-found fallback outside known and navigable routes', () => {
   assert.equal(appRoutes.some(({ path }) => path === '*'), false)
   assert.equal(primaryNavigationRoutes.some(({ path }) => path === '*'), false)
   assert.equal(utilityNavigationRoutes.some(({ path }) => path === '*'), false)
-})
-
-test('adds React Router as the only dependency beyond the React foundation', () => {
-  assert.deepEqual(Object.keys(packageJson.dependencies).sort(), [
-    'react',
-    'react-dom',
-    'react-router-dom',
-  ])
 })

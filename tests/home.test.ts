@@ -32,7 +32,7 @@ test('presents the essential React Conference information and registration actio
   assert.match(page, /<a[^>]*href="#inscricao"[^>]*>Inscrever<\/a>/)
 })
 
-test('offers an accessible registration form without claiming an unsupported submission', () => {
+test('offers an accessible registration form with explicit consent', () => {
   const page = renderHome()
 
   assert.match(page, /<section[^>]*id="inscricao"[^>]*>/)
@@ -58,6 +58,7 @@ test('offers an accessible registration form without claiming an unsupported sub
   assert.match(phoneInput, /autoComplete="tel"/)
 
   assert.match(page, /<button[^>]*type="submit"[^>]*>Enviar inscrição<\/button>/)
-  assert.match(page, /envio.*ainda não está disponível/i)
-  assert.doesNotMatch(page, /inscrição (?:concluída|confirmada|realizada)/i)
+  assert.match(page, /type="checkbox"[^>]*required/)
+  assert.match(page, /Li e concordo com o aviso de privacidade, versão 2026-11-02/)
+  assert.doesNotMatch(page, /envio.*ainda não está disponível/i)
 })
