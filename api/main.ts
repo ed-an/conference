@@ -13,6 +13,9 @@ if (!databaseUrl || !adminToken || !allowedOrigin) {
 }
 
 const prisma = new PrismaClient({ datasourceUrl: databaseUrl })
-const app = await createApi(new PrismaRegistrationStore(prisma), { admin: adminToken, nonAdmin: nonAdminToken })
-app.enableCors({ origin: allowedOrigin, methods: ['GET', 'POST'] })
+const app = await createApi(
+  new PrismaRegistrationStore(prisma),
+  { admin: adminToken, nonAdmin: nonAdminToken },
+  allowedOrigin,
+)
 await app.listen(Number(process.env.PORT ?? 3001))

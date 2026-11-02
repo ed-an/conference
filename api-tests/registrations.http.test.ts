@@ -9,7 +9,22 @@ import type { RegistrationStore } from '../api/registrations/registration.store.
 let app: INestApplication
 
 beforeAll(async () => {
-  app = await createApi(new InMemoryRegistrationStore())
+  app = await createApi(
+    new InMemoryRegistrationStore(),
+    undefined,
+    'http://localhost:5173',
+  )
+})
+
+test('OPTIONS /registrations allows the configured frontend origin', async () => {
+  const response = await request(app.getHttpServer())
+    .options('/registrations')
+    .set('origin', 'http://localhost:5173')
+    .set('access-control-request-method', 'POST')
+    .set('access-control-request-headers', 'content-type')
+    .expect(204)
+
+  assert.equal(response.headers['access-control-allow-origin'], 'http://localhost:5173')
 })
 
 afterAll(async () => {

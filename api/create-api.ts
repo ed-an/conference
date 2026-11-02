@@ -13,6 +13,7 @@ import {
 export async function createApi(
   store: RegistrationStore,
   authTokens: AdminAuthTokens = { admin: 'test-admin-token', nonAdmin: 'test-viewer-token' },
+  allowedOrigin?: string,
 ): Promise<INestApplication> {
   class ApiModule {}
 
@@ -31,6 +32,9 @@ export async function createApi(
   })(ApiModule)
 
   const app = await NestFactory.create(ApiModule, { logger: false })
+  if (allowedOrigin) {
+    app.enableCors({ origin: allowedOrigin, methods: ['GET', 'POST'] })
+  }
   await app.init()
   return app
 }
