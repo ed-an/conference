@@ -8,12 +8,13 @@ describe('AdminRegistrationsPage', () => {
 
   test('lists registrations after administrative authorization', async () => {
     const listRegistrations = vi.fn().mockResolvedValue([{
-      name: 'Ana Souza',
-      email: 'ana@example.com',
-      phone: '+55 11 99999-0000',
       eventId: '10000000-0000-4000-8000-000000000001',
-      consentedAt: '2026-11-02T12:00:00.000Z',
-      privacyNoticeVersion: '2026-11-02',
+      contact: {
+        name: 'Ana Souza', email: 'ana@example.com', phone: '+55 11 99999-0000',
+      },
+      consent: {
+        consentedAt: '2026-11-02T12:00:00.000Z', privacyNoticeVersion: '2026-11-02',
+      },
       createdAt: '2026-11-02T12:00:00.000Z',
     }])
     const user = userEvent.setup()

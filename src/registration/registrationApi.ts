@@ -1,12 +1,14 @@
 import { requestJson } from '../api/requestJson'
+import type {
+  AttendeeContact,
+  EventId,
+  RegistrationConsentAcceptance,
+} from '../../shared/registration-domain'
 
 export interface RegistrationRequest {
-  name: string
-  email: string
-  phone: string
-  eventId: string
-  privacyNoticeVersion: string
-  consent: true
+  contact: AttendeeContact
+  eventId: EventId
+  consent: RegistrationConsentAcceptance
 }
 export interface RegistrationConfirmation {
   status: 'confirmed'

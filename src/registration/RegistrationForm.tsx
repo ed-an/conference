@@ -1,6 +1,11 @@
 import { useState, type FormEvent } from 'react'
 import { currentEvent } from '../data/events'
 import { registerAttendee, type RegistrationConfirmation, type RegistrationRequest } from './registrationApi'
+import {
+  currentPrivacyNotice,
+  isEventId,
+  normalizeEmail,
+} from '../../shared/registration-domain'
 
 interface RegistrationFormProps {
   register?: (input: RegistrationRequest) => Promise<RegistrationConfirmation>
@@ -15,6 +20,11 @@ export function RegistrationForm({ register = registerAttendee }: RegistrationFo
     const form = event.currentTarget
     const data = new FormData(form)
     const phone = String(data.get('phone') ?? '')
+    if (!isEventId(currentEvent.id)) {
+      setState('error')
+      setMessage('Este evento não está disponível para inscrição.')
+      return
+    }
     if (phone.replace(/\D/g, '').length < 10) {
       setState('error')
       setMessage('Informe um telefone com DDD para continuar.')
@@ -24,12 +34,16 @@ export function RegistrationForm({ register = registerAttendee }: RegistrationFo
     setMessage('')
     try {
       const confirmation = await register({
-        name: String(data.get('name') ?? ''),
-        email: String(data.get('email') ?? ''),
-        phone,
+        contact: {
+          name: String(data.get('name') ?? ''),
+          email: normalizeEmail(String(data.get('email') ?? '')),
+          phone,
+        },
         eventId: currentEvent.id,
-        privacyNoticeVersion: '2026-11-02',
-        consent: true,
+        consent: {
+          accepted: true,
+          privacyNoticeVersion: currentPrivacyNotice.version,
+        },
       })
       setState('success')
       setMessage(confirmation.message)
@@ -55,12 +69,12 @@ export function RegistrationForm({ register = registerAttendee }: RegistrationFo
         <input type="tel" id="registration-phone" name="phone" required autoComplete="tel" minLength={10} pattern="[+0-9 ()-]{10,}" />
       </div>
       <details className="privacy-notice" id="registration-privacy-notice">
-        <summary>Aviso de privacidade — versão 2026-11-02</summary>
-        <p>Nome, e-mail e telefone serão usados somente para administrar sua participação neste evento. O acesso é restrito à organização, e os dados não serão usados para pagamentos ou marketing. Você poderá solicitar informações, correção ou exclusão à organização. O prazo de retenção será publicado antes da abertura das inscrições em produção.</p>
+        <summary>{currentPrivacyNotice.title} — versão {currentPrivacyNotice.version}</summary>
+        <p>{currentPrivacyNotice.text}</p>
       </details>
       <div className="consent-field">
         <input id="registration-consent" name="consent" type="checkbox" required aria-describedby="registration-privacy-notice" />
-        <label htmlFor="registration-consent">Li e concordo com o aviso de privacidade, versão 2026-11-02.</label>
+        <label htmlFor="registration-consent">Li e concordo com o aviso de privacidade, versão {currentPrivacyNotice.version}.</label>
       </div>
       <button className="primary-action" type="submit" disabled={state === 'submitting'}>
         {state === 'submitting' ? 'Enviando…' : 'Enviar inscrição'}

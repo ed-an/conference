@@ -24,9 +24,11 @@ describe('RegistrationForm', () => {
 
     expect((await screen.findByRole('status')).textContent).toContain('Inscrição realizada com sucesso.')
     expect(register).toHaveBeenCalledWith(expect.objectContaining({
-      name: 'Ana Souza',
-      email: 'ana@example.com',
-      consent: true,
+      contact: expect.objectContaining({
+        name: 'Ana Souza',
+        email: 'ana@example.com',
+      }),
+      consent: expect.objectContaining({ accepted: true }),
     }))
   })
 

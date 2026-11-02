@@ -1,22 +1,22 @@
+import type {
+  AttendeeContact,
+  EventId,
+  RegistrationConsent,
+} from '../../shared/registration-domain.ts'
+
 export interface RegistrationRecord {
   id: string
   personId: string
-  eventId: string
-  name: string
-  email: string
-  phone: string
-  consentedAt: Date
-  privacyNoticeVersion: string
+  eventId: EventId
+  contact: AttendeeContact
+  consent: RegistrationConsent
   createdAt: Date
 }
 
 export interface CreateRegistrationRecord {
-  eventId: string
-  name: string
-  email: string
-  phone: string
-  privacyNoticeVersion: string
-  consentedAt: Date
+  eventId: EventId
+  contact: AttendeeContact
+  consent: RegistrationConsent
 }
 
 export interface RegistrationStore {

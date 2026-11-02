@@ -31,7 +31,7 @@ export function AdminRegistrationsPage({ listRegistrations = listEventRegistrati
     </form> : registrations.length === 0 ? <p role="status">Ainda não há inscrições para este evento.</p> :
       <div className="admin-table-wrapper"><table><caption>Inscrições confirmadas · {currentEvent.name} {new Date(currentEvent.startDate).getFullYear()}</caption>
         <thead><tr><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Inscrição</th><th>Consentimento</th></tr></thead>
-        <tbody>{registrations.map((item) => <tr key={`${item.eventId}-${item.email}`}><td>{item.name}</td><td>{item.email}</td><td>{item.phone}</td><td>{formatDate(item.createdAt)}</td><td>{formatDate(item.consentedAt)} · aviso {item.privacyNoticeVersion}</td></tr>)}</tbody>
+        <tbody>{registrations.map((item) => <tr key={`${item.eventId}-${item.contact.email}`}><td>{item.contact.name}</td><td>{item.contact.email}</td><td>{item.contact.phone}</td><td>{formatDate(item.createdAt)}</td><td>{formatDate(item.consent.consentedAt)} · aviso {item.consent.privacyNoticeVersion}</td></tr>)}</tbody>
       </table></div>}
   </section>
 }

@@ -1,9 +1,12 @@
 import { currentEvent } from '../data/events'
 import { requestJson } from '../api/requestJson'
+import type { EventId, NormalizedEmail, PrivacyNoticeVersion } from '../../shared/registration-domain'
 
 export interface AdminRegistration {
-  name: string; email: string; phone: string; eventId: string
-  consentedAt: string; privacyNoticeVersion: string; createdAt: string
+  eventId: EventId
+  contact: { name: string; email: NormalizedEmail; phone: string }
+  consent: { consentedAt: string; privacyNoticeVersion: PrivacyNoticeVersion }
+  createdAt: string
 }
 
 export async function listEventRegistrations(token: string): Promise<AdminRegistration[]> {

@@ -27,9 +27,11 @@ afterAll(async () => {
 
 integrationTest('PostgreSQL prevents concurrent duplicate registrations atomically', async () => {
   const registration = {
-    name: 'Carla Mendes', email: 'carla@example.com', phone: '+55 11 97777-0000',
+    contact: {
+      name: 'Carla Mendes', email: 'carla@example.com', phone: '+55 11 97777-0000',
+    },
     eventId: '10000000-0000-4000-8000-000000000001',
-    privacyNoticeVersion: '2026-11-02', consent: true,
+    consent: { accepted: true, privacyNoticeVersion: '2026-11-02' },
   }
   const responses = await Promise.all([
     request(app.getHttpServer()).post('/registrations').send(registration),

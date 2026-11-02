@@ -7,6 +7,15 @@ import { InMemoryRegistrationStore } from '../api/registrations/in-memory-regist
 import type { RegistrationStore } from '../api/registrations/registration.store.ts'
 
 let app: INestApplication
+const validRegistration = {
+  contact: {
+    name: 'Ana Souza',
+    email: 'ana@example.com',
+    phone: '+55 11 99999-0000',
+  },
+  eventId: '11111111-1111-4111-8111-111111111111',
+  consent: { accepted: true, privacyNoticeVersion: '2026-11-02' },
+}
 
 beforeAll(async () => {
   app = await createApi(
@@ -34,14 +43,7 @@ afterAll(async () => {
 test('POST /registrations confirms a valid registration', async () => {
   const response = await request(app.getHttpServer())
     .post('/registrations')
-    .send({
-      name: 'Ana Souza',
-      email: 'ana@example.com',
-      phone: '+55 11 99999-0000',
-      eventId: '11111111-1111-4111-8111-111111111111',
-      privacyNoticeVersion: '2026-11-02',
-      consent: true,
-    })
+    .send(validRegistration)
     .expect(201)
 
   assert.deepEqual(response.body, {
@@ -60,17 +62,28 @@ test('POST /registrations rejects invalid data and missing consent', async () =>
   assert.match(response.body.message, /revise os dados/i)
 })
 
+test('POST /registrations rejects a privacy notice version that is not current', async () => {
+  const response = await request(app.getHttpServer())
+    .post('/registrations')
+    .send({
+      ...validRegistration,
+      consent: { accepted: true, privacyNoticeVersion: '2025-01-01' },
+    })
+    .expect(400)
+
+  assert.equal(response.body.status, 'invalid')
+})
+
 test('POST /registrations maps unexpected failures to a safe pt-BR response', async () => {
   const failingStore: RegistrationStore = {
     create: async () => { throw new Error('database password leaked') },
     listByEvent: async () => { throw new Error('database password leaked') },
   }
   const failingApp = await createApi(failingStore)
-  const response = await request(failingApp.getHttpServer()).post('/registrations').send({
-    name: 'Ana Souza', email: 'ana@example.com', phone: '+55 11 99999-0000',
-    eventId: '11111111-1111-4111-8111-111111111111',
-    privacyNoticeVersion: '2026-11-02', consent: true,
-  }).expect(500)
+  const response = await request(failingApp.getHttpServer())
+    .post('/registrations')
+    .send(validRegistration)
+    .expect(500)
 
   assert.equal(response.body.message, 'Não foi possível concluir sua inscrição. Tente novamente.')
   assert.doesNotMatch(JSON.stringify(response.body), /password|database/i)
@@ -86,18 +99,22 @@ test('POST /registrations maps unexpected failures to a safe pt-BR response', as
 
 test('POST /registrations detects normalized duplicate e-mails in the same event', async () => {
   const registration = {
-    name: 'Bruno Lima',
-    email: 'bruno@example.com',
-    phone: '+55 11 98888-0000',
+    contact: {
+      name: 'Bruno Lima',
+      email: 'bruno@example.com',
+      phone: '+55 11 98888-0000',
+    },
     eventId: '22222222-2222-4222-8222-222222222222',
-    privacyNoticeVersion: '2026-11-02',
-    consent: true,
+    consent: { accepted: true, privacyNoticeVersion: '2026-11-02' },
   }
 
   await request(app.getHttpServer()).post('/registrations').send(registration).expect(201)
   const response = await request(app.getHttpServer())
     .post('/registrations')
-    .send({ ...registration, email: '  BRUNO@EXAMPLE.COM ' })
+    .send({
+      ...registration,
+      contact: { ...registration.contact, email: '  BRUNO@EXAMPLE.COM ' },
+    })
     .expect(409)
 
   assert.deepEqual(response.body, {
@@ -121,13 +138,10 @@ describe('GET /admin/events/:eventId/registrations', () => {
 
     assert.equal(response.body.length, 1)
     assert.deepEqual(Object.keys(response.body[0]).sort(), [
-      'consentedAt',
+      'consent',
+      'contact',
       'createdAt',
-      'email',
       'eventId',
-      'name',
-      'phone',
-      'privacyNoticeVersion',
     ])
   })
 

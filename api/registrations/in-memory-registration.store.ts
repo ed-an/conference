@@ -11,7 +11,7 @@ export class InMemoryRegistrationStore implements RegistrationStore {
 
   async create(input: CreateRegistrationRecord): Promise<RegistrationRecord> {
     const duplicate = this.records.some(
-      (registration) => registration.eventId === input.eventId && registration.email === input.email,
+      (registration) => registration.eventId === input.eventId && registration.contact.email === input.contact.email,
     )
 
     if (duplicate) {

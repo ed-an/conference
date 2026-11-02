@@ -7,14 +7,23 @@ import {
   REGISTRATION_STORE,
   type RegistrationStore,
 } from './registration.store.ts'
+import {
+  isCurrentPrivacyNoticeVersion,
+  isEventId,
+  normalizeEmail,
+} from '../../shared/registration-domain.ts'
 
 export interface RegistrationInput {
-  name?: unknown
-  email?: unknown
-  phone?: unknown
+  contact?: {
+    name?: unknown
+    email?: unknown
+    phone?: unknown
+  }
   eventId?: unknown
-  privacyNoticeVersion?: unknown
-  consent?: unknown
+  consent?: {
+    accepted?: unknown
+    privacyNoticeVersion?: unknown
+  }
 }
 
 export class RegistrationsService {
@@ -26,12 +35,12 @@ export class RegistrationsService {
 
   async register(input: RegistrationInput) {
     if (
-      typeof input.name !== 'string' || input.name.trim().length < 2 ||
-      typeof input.email !== 'string' || !/^\S+@\S+\.\S+$/.test(input.email.trim()) ||
-      typeof input.phone !== 'string' || input.phone.replace(/\D/g, '').length < 10 ||
-      typeof input.eventId !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(input.eventId) ||
-      typeof input.privacyNoticeVersion !== 'string' || input.privacyNoticeVersion.length === 0 ||
-      input.consent !== true
+      typeof input.contact?.name !== 'string' || input.contact.name.trim().length < 2 ||
+      typeof input.contact.email !== 'string' || !/^\S+@\S+\.\S+$/.test(input.contact.email.trim()) ||
+      typeof input.contact.phone !== 'string' || input.contact.phone.replace(/\D/g, '').length < 10 ||
+      !isEventId(input.eventId) ||
+      !isCurrentPrivacyNoticeVersion(input.consent?.privacyNoticeVersion) ||
+      input.consent.accepted !== true
     ) {
       throw new BadRequestException({
         status: 'invalid',
@@ -41,12 +50,16 @@ export class RegistrationsService {
 
     try {
       await this.store.create({
-        name: input.name.trim(),
-        email: input.email.trim().toLowerCase(),
-        phone: input.phone.trim(),
         eventId: input.eventId,
-        privacyNoticeVersion: input.privacyNoticeVersion,
-        consentedAt: new Date(),
+        contact: {
+          name: input.contact.name.trim(),
+          email: normalizeEmail(input.contact.email),
+          phone: input.contact.phone.trim(),
+        },
+        consent: {
+          privacyNoticeVersion: input.consent.privacyNoticeVersion,
+          consentedAt: new Date(),
+        },
       })
     } catch (error) {
       if (error instanceof DuplicateRegistrationError) {
@@ -85,11 +98,8 @@ export class RegistrationsService {
     }
     return registrations.map((registration) => ({
       eventId: registration.eventId,
-      name: registration.name,
-      email: registration.email,
-      phone: registration.phone,
-      consentedAt: registration.consentedAt,
-      privacyNoticeVersion: registration.privacyNoticeVersion,
+      contact: registration.contact,
+      consent: registration.consent,
       createdAt: registration.createdAt,
     }))
   }
