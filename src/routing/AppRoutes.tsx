@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { HotelsPage } from '../accommodation/HotelsPage'
+import { AdminRegistrationsPage } from '../admin/AdminRegistrationsPage'
 import { CodeOfConductPage } from '../conduct/CodeOfConductPage'
 import { FoodPage } from '../food/FoodPage'
 import { HomePage } from '../home/HomePage'
@@ -18,6 +19,7 @@ const routeElements: Record<RouteId, ReactElement> = {
   codeOfConduct: <CodeOfConductPage />,
   speakers: <SpeakersPage />,
   schedule: <SchedulePage />,
+  adminRegistrations: <AdminRegistrationsPage />,
 }
 
 export function AppRoutes() {

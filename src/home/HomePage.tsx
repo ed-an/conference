@@ -1,4 +1,5 @@
 import { currentEvent } from '../data/events'
+import { RegistrationForm } from '../registration/RegistrationForm'
 
 const eventDate = new Intl.DateTimeFormat('pt-BR', {
   day: 'numeric',
@@ -33,23 +34,9 @@ export function HomePage() {
         <div className="registration__intro">
           <p className="eyebrow">Comece sua inscrição</p>
           <h2 id="registration-title">Inscreva-se para viver essa experiência</h2>
-          <p>Preencha seus dados para se preparar. O envio da inscrição ainda não está disponível.</p>
+          <p>Preencha seus dados para confirmar seu interesse em participar.</p>
         </div>
-        <form className="registration__form" onSubmit={(event) => event.preventDefault()}>
-          <div className="form-field">
-            <label htmlFor="registration-name">Nome</label>
-            <input id="registration-name" name="name" required autoComplete="name" />
-          </div>
-          <div className="form-field">
-            <label htmlFor="registration-email">E-mail</label>
-            <input type="email" id="registration-email" name="email" required autoComplete="email" />
-          </div>
-          <div className="form-field">
-            <label htmlFor="registration-phone">Telefone</label>
-            <input type="tel" id="registration-phone" name="phone" required autoComplete="tel" />
-          </div>
-          <button className="primary-action" type="submit">Enviar inscrição</button>
-        </form>
+        <RegistrationForm />
       </section>
     </>
   )

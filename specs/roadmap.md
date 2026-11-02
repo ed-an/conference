@@ -15,7 +15,7 @@ This roadmap orders delivery in deliberately small phases. Each phase should be 
 ## Essential event information
 
 - [x] **Phase 08 — Build the home hero:** Show the event name, description, date, location, and primary call to action.
-- [ ] **Phase 09 — Persist registrations:** Connect the registration form to secure storage with server-side validation, consent handling, duplicate protection, and clear success and error states; exclude ticket sales and payments.
+- [x] **Phase 09 — Persist registrations:** Connect the registration form to secure storage with server-side validation, consent handling, duplicate protection, and clear success and error states; exclude ticket sales and payments.
 - [ ] **Phase 10 — Build the event overview:** Explain the conference purpose and intended audience on the home page.
 - [ ] **Phase 11 — Build the location page:** Add venue address, access guidance, and transport information.
 - [ ] **Phase 12 — Add hotel information:** Present accommodation options with practical comparison details.
