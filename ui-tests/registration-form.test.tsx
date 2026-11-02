@@ -62,6 +62,40 @@ describe('RegistrationForm', () => {
     expect(register).not.toHaveBeenCalled()
   })
 
+  test('explains how to correct name, e-mail and consent in pt-BR', async () => {
+    const register = vi.fn()
+    const user = userEvent.setup()
+    render(<RegistrationForm register={register} />)
+    await user.type(screen.getByLabelText('Nome'), 'A')
+    await user.type(screen.getByLabelText('E-mail'), 'email-invalido')
+    await user.type(screen.getByLabelText('Telefone'), '+55 11 99999-0000')
+    await user.click(screen.getByRole('button', { name: 'Enviar inscrição' }))
+
+    expect(screen.getByText('Informe seu nome com pelo menos 2 caracteres.')).toBeTruthy()
+    expect(screen.getByText('Informe um e-mail válido.')).toBeTruthy()
+    expect(screen.getByText('Leia e aceite o aviso de privacidade para continuar.')).toBeTruthy()
+    expect(register).not.toHaveBeenCalled()
+  })
+
+  test('prevents repeated submissions while a request is in progress', async () => {
+    let resolveRegistration!: (value: { status: 'confirmed'; message: string }) => void
+    const register = vi.fn().mockReturnValue(new Promise((resolve) => {
+      resolveRegistration = resolve
+    }))
+    const user = userEvent.setup()
+    render(<RegistrationForm register={register} />)
+    await user.type(screen.getByLabelText('Nome'), 'Ana Souza')
+    await user.type(screen.getByLabelText('E-mail'), 'ana@example.com')
+    await user.type(screen.getByLabelText('Telefone'), '+55 11 99999-0000')
+    await user.click(screen.getByRole('checkbox', { name: /concordo/i }))
+    const submit = screen.getByRole('button', { name: 'Enviar inscrição' })
+    await Promise.all([user.click(submit), user.click(submit)])
+
+    expect(register).toHaveBeenCalledTimes(1)
+    resolveRegistration({ status: 'confirmed', message: 'Inscrição realizada com sucesso.' })
+    expect((await screen.findByRole('status')).textContent).toContain('Inscrição realizada')
+  })
+
   test('explains network unavailability in pt-BR and preserves entered data', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Failed to fetch')))
     const user = userEvent.setup()

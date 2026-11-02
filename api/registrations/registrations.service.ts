@@ -8,10 +8,11 @@ import {
   type RegistrationStore,
 } from './registration.store.ts'
 import {
-  isCurrentPrivacyNoticeVersion,
+  type EventId,
   isEventId,
   normalizeEmail,
 } from '../../shared/registration-domain.ts'
+import { isCurrentPrivacyNoticeVersion } from '../../content/privacy-notice.ts'
 
 export interface RegistrationInput {
   contact?: {
@@ -86,7 +87,7 @@ export class RegistrationsService {
     }
   }
 
-  async listByEvent(eventId: string) {
+  async listByEvent(eventId: EventId) {
     let registrations
     try {
       registrations = await this.store.listByEvent(eventId)
@@ -97,11 +98,22 @@ export class RegistrationsService {
       })
     }
     return registrations.map((registration) => ({
-      eventId: registration.eventId,
+      event: registration.event,
       contact: registration.contact,
       consent: registration.consent,
       createdAt: registration.createdAt,
     }))
+  }
+
+  async listEvents() {
+    try {
+      return await this.store.listEvents()
+    } catch {
+      throw new InternalServerErrorException({
+        status: 'unavailable',
+        message: 'Não foi possível carregar os eventos. Tente novamente.',
+      })
+    }
   }
 }
 

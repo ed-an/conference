@@ -3,6 +3,7 @@
 ## Validação automatizada
 
 - Executar todos os comandos de teste configurados para frontend e backend e confirmar que passam.
+- Executar `npm run test:integration` com `TEST_DATABASE_URL` apontando para um banco PostgreSQL exclusivo de testes.
 - Executar `npm run lint` com sucesso em todos os pacotes aplicáveis.
 - Executar `npm run build` com sucesso em todos os pacotes aplicáveis.
 - Aplicar as migrações Prisma em um banco de teste limpo e confirmar que o esquema é criado sem intervenção manual.

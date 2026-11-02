@@ -45,17 +45,21 @@ h2 { margin-bottom: var(--space-4); font-size: var(--type-headline-large-size); 
 .form-field input:hover { border-color: var(--color-primary); }
 .consent-field { display: grid; grid-template-columns: auto 1fr; align-items: start; gap: var(--space-3); }
 .consent-field input { width: 1.25rem; height: 1.25rem; margin-top: 0.15rem; }
+.consent-field .field-error { grid-column: 1 / -1; }
 .privacy-notice { padding: var(--space-4); border: var(--border-width-default) solid var(--color-outline-variant); border-radius: var(--radius-small); background: var(--color-surface); }
 .privacy-notice summary { cursor: pointer; font-weight: var(--type-label-large-weight); }
 .privacy-notice p { margin: var(--space-3) 0 0; color: var(--color-on-surface-variant); }
 .form-message { margin: 0; padding: var(--space-3) var(--space-4); border-radius: var(--radius-small); }
 .form-message--success { background: var(--color-primary-container); color: var(--color-on-primary-container); }
 .form-message--error { border: var(--border-width-default) solid var(--color-error); color: var(--color-error); }
+.field-error { margin: 0; color: var(--color-error); font-size: var(--type-body-small-size); }
 .registration__form .primary-action { width: 100%; border: 0; cursor: pointer; }
 .registration__form .primary-action:disabled { cursor: wait; opacity: 0.7; }
 .route-placeholder, .not-found-page { min-height: min(36rem, calc(100vh - 5rem)); display: grid; align-content: center; justify-items: start; padding-block: var(--space-20); }
 .admin-page { min-height: min(36rem, calc(100vh - 5rem)); padding-block: var(--space-20); }
 .admin-access { max-width: 32rem; display: grid; gap: var(--space-6); }
+.admin-event-selector { max-width: 32rem; margin-bottom: var(--space-6); }
+.admin-event-selector select { min-height: 3rem; padding: var(--space-3) var(--space-4); border: var(--border-width-default) solid var(--color-outline); border-radius: var(--radius-small); background: var(--color-surface); color: var(--color-on-surface); font: inherit; }
 .admin-table-wrapper { overflow-x: auto; }
 .admin-table-wrapper table { width: 100%; border-collapse: collapse; }
 .admin-table-wrapper caption { margin-bottom: var(--space-4); text-align: left; font-weight: var(--type-title-medium-weight); }

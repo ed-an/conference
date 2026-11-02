@@ -44,4 +44,4 @@ Instale as dependências e copie `.env.example` para `.env`, substituindo o toke
 
 O formulário público envia dados para `VITE_API_URL`. A rota `/admin/registrations` solicita o token administrativo e o mantém somente na memória da página; ele não deve ser configurado como variável `VITE_*` nem incluído no bundle.
 
-Os gates locais são `npm test`, `npm run lint`, `npm run build` e `npm run typecheck:api`. Para incluir o teste real de concorrência no PostgreSQL, defina `TEST_DATABASE_URL` antes de `npm run test:api`.
+Os gates locais são `npm test`, `npm run lint`, `npm run build` e `npm run typecheck:api`. O teste PostgreSQL é um gate separado e nunca é ignorado silenciosamente: defina `TEST_DATABASE_URL` para um banco exclusivo de testes e execute `npm run test:integration`.

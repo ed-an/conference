@@ -1,6 +1,7 @@
-import { Controller, Get, Inject, Param, UseGuards } from '@nestjs/common'
+import { BadRequestException, Controller, Get, Inject, Param, UseGuards } from '@nestjs/common'
 import { AdminAuthGuard } from './admin-auth.guard.ts'
 import { RegistrationsService } from '../registrations/registrations.service.ts'
+import { isEventId } from '../../shared/registration-domain.ts'
 
 export class AdminRegistrationsController {
   private readonly registrations: RegistrationsService
@@ -10,7 +11,14 @@ export class AdminRegistrationsController {
   }
 
   list(eventId: string) {
+    if (!isEventId(eventId)) {
+      throw new BadRequestException({ status: 'invalid', message: 'Selecione um evento válido.' })
+    }
     return this.registrations.listByEvent(eventId)
+  }
+
+  listEvents() {
+    return this.registrations.listEvents()
   }
 }
 
@@ -31,3 +39,18 @@ UseGuards(AdminAuthGuard)(
 )
 Inject(RegistrationsService)(AdminRegistrationsController, undefined, 0)
 Controller('admin')(AdminRegistrationsController)
+
+const listEventsDescriptor = Object.getOwnPropertyDescriptor(
+  AdminRegistrationsController.prototype,
+  'listEvents',
+)!
+Get('events')(
+  AdminRegistrationsController.prototype,
+  'listEvents',
+  listEventsDescriptor,
+)
+UseGuards(AdminAuthGuard)(
+  AdminRegistrationsController.prototype,
+  'listEvents',
+  listEventsDescriptor,
+)

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import type { INestApplication } from '@nestjs/common'
 import request from 'supertest'
 import { afterAll, beforeAll, describe, test } from 'vitest'
+import { vi } from 'vitest'
 import { createApi } from '../api/create-api.ts'
 import { InMemoryRegistrationStore } from '../api/registrations/in-memory-registration.store.ts'
 import type { RegistrationStore } from '../api/registrations/registration.store.ts'
@@ -77,6 +78,7 @@ test('POST /registrations rejects a privacy notice version that is not current',
 test('POST /registrations maps unexpected failures to a safe pt-BR response', async () => {
   const failingStore: RegistrationStore = {
     create: async () => { throw new Error('database password leaked') },
+    listEvents: async () => { throw new Error('database password leaked') },
     listByEvent: async () => { throw new Error('database password leaked') },
   }
   const failingApp = await createApi(failingStore)
@@ -123,7 +125,60 @@ test('POST /registrations detects normalized duplicate e-mails in the same event
   })
 })
 
+test('POST /registrations allows the same person in different events', async () => {
+  const registration = {
+    contact: { name: 'Daniela Luz', email: 'daniela@example.com', phone: '+55 11 96666-0000' },
+    consent: { accepted: true, privacyNoticeVersion: '2026-11-02' },
+  }
+  await request(app.getHttpServer()).post('/registrations')
+    .send({ ...registration, eventId: '11111111-1111-4111-8111-111111111111' }).expect(201)
+  await request(app.getHttpServer()).post('/registrations')
+    .send({ ...registration, eventId: '22222222-2222-4222-8222-222222222222' }).expect(201)
+})
+
+test('POST /registrations explains when an event is unavailable', async () => {
+  const response = await request(app.getHttpServer()).post('/registrations')
+    .send({ ...validRegistration, eventId: '33333333-3333-4333-8333-333333333333' })
+    .expect(400)
+
+  assert.equal(response.body.status, 'event-unavailable')
+})
+
+test('registration requests do not write personal data or secrets to console logs', async () => {
+  const log = vi.spyOn(console, 'log').mockImplementation(() => undefined)
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+  const error = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+  await request(app.getHttpServer()).post('/registrations').send({
+    ...validRegistration,
+    contact: { name: 'Pessoa Sigilosa', email: 'segredo@example.com', phone: '551188887777' },
+  }).expect(201)
+  const output = [...log.mock.calls, ...warn.mock.calls, ...error.mock.calls].flat().join(' ')
+  log.mockRestore(); warn.mockRestore(); error.mockRestore()
+
+  assert.doesNotMatch(output, /Pessoa Sigilosa|segredo@example\.com|551188887777|test-admin-token/)
+})
+
 describe('GET /admin/events/:eventId/registrations', () => {
+  test('lists available events for an authorized administrator', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/admin/events')
+      .set('authorization', 'Bearer test-admin-token')
+      .expect(200)
+
+    assert.deepEqual(response.body, [
+      {
+        id: '11111111-1111-4111-8111-111111111111',
+        name: 'Evento de teste',
+        year: 2026,
+      },
+      {
+        id: '22222222-2222-4222-8222-222222222222',
+        name: 'Evento de teste',
+        year: 2026,
+      },
+    ])
+  })
+
   test('denies requests without administrative authorization', async () => {
     await request(app.getHttpServer())
       .get('/admin/events/11111111-1111-4111-8111-111111111111/registrations')
@@ -136,12 +191,18 @@ describe('GET /admin/events/:eventId/registrations', () => {
       .set('authorization', 'Bearer test-admin-token')
       .expect(200)
 
-    assert.equal(response.body.length, 1)
-    assert.deepEqual(Object.keys(response.body[0]).sort(), [
+    const ana = response.body.find((registration: { contact: { email: string } }) => registration.contact.email === 'ana@example.com')
+    assert.ok(ana)
+    assert.deepEqual(ana.event, {
+      id: '11111111-1111-4111-8111-111111111111',
+      name: 'Evento de teste',
+      year: 2026,
+    })
+    assert.deepEqual(Object.keys(ana).sort(), [
       'consent',
       'contact',
       'createdAt',
-      'eventId',
+      'event',
     ])
   })
 

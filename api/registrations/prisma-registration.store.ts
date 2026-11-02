@@ -9,6 +9,7 @@ import type {
   RegistrationStore,
 } from './registration.store.ts'
 import {
+  type EventId,
   isEventId,
   normalizeEmail,
   toPrivacyNoticeVersion,
@@ -45,7 +46,7 @@ export class PrismaRegistrationStore implements RegistrationStore {
         return {
           id: registration.id,
           personId: registration.personId,
-          eventId: input.eventId,
+          event: { id: input.eventId, name: event.name, year: event.year },
           contact: {
             name: person.name,
             email: normalizeEmail(person.email),
@@ -66,10 +67,17 @@ export class PrismaRegistrationStore implements RegistrationStore {
     }
   }
 
-  async listByEvent(eventId: string): Promise<readonly RegistrationRecord[]> {
+  async listEvents() {
+    const events = await this.prisma.event.findMany({ orderBy: [{ year: 'desc' }, { name: 'asc' }] })
+    return events.flatMap((event) => isEventId(event.id)
+      ? [{ id: event.id, name: event.name, year: event.year }]
+      : [])
+  }
+
+  async listByEvent(eventId: EventId): Promise<readonly RegistrationRecord[]> {
     const registrations = await this.prisma.registration.findMany({
       where: { eventId },
-      include: { person: true },
+      include: { person: true, event: true },
       orderBy: { createdAt: 'desc' },
     })
     return registrations.map(({ person, ...registration }) => {
@@ -79,7 +87,11 @@ export class PrismaRegistrationStore implements RegistrationStore {
       return {
         id: registration.id,
         personId: registration.personId,
-        eventId: registration.eventId,
+        event: {
+          id: registration.eventId,
+          name: registration.event.name,
+          year: registration.event.year,
+        },
         contact: {
           name: person.name,
           email: normalizeEmail(person.email),
