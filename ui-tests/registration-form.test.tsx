@@ -97,6 +97,9 @@ describe('RegistrationForm', () => {
   })
 
   test('explains network unavailability in pt-BR and preserves entered data', async () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => undefined)
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined)
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Failed to fetch')))
     const user = userEvent.setup()
     render(<RegistrationForm />)
@@ -110,5 +113,8 @@ describe('RegistrationForm', () => {
 
     expect((await screen.findByRole('alert')).textContent).toContain('Não foi possível enviar sua inscrição. Tente novamente.')
     expect((screen.getByLabelText('E-mail') as HTMLInputElement).value).toBe('ana@example.com')
+    const output = [...log.mock.calls, ...warn.mock.calls, ...error.mock.calls].flat().join(' ')
+    log.mockRestore(); warn.mockRestore(); error.mockRestore()
+    expect(output).not.toMatch(/Ana Souza|ana@example\.com|99999-0000|Failed to fetch/)
   })
 })

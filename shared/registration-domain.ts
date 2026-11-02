@@ -41,6 +41,18 @@ export function normalizeEmail(value: string): NormalizedEmail {
   return value.trim().toLowerCase() as NormalizedEmail
 }
 
+export function isValidAttendeeName(value: string): boolean {
+  return value.trim().length >= 2
+}
+
+export function isValidEmail(value: string): boolean {
+  return /^\S+@\S+\.\S+$/.test(value.trim())
+}
+
+export function isValidPhone(value: string): boolean {
+  return value.replace(/\D/g, '').length >= 10
+}
+
 export function toPrivacyNoticeVersion(value: string): PrivacyNoticeVersion {
   return value as PrivacyNoticeVersion
 }

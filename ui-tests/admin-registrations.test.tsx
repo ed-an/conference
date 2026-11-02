@@ -60,4 +60,32 @@ describe('AdminRegistrationsPage', () => {
 
     expect((await screen.findByRole('status')).textContent).toContain('Ainda não há inscrições')
   })
+  test('shows loading without stale registrations while switching events', async () => {
+    let finishLoading: (value: never[]) => void = () => undefined
+    const nextEvent = new Promise<never[]>((resolve) => { finishLoading = resolve })
+    const listEvents = vi.fn().mockResolvedValue([
+      { id: '10000000-0000-4000-8000-000000000001', name: 'React Conference', year: 2026 },
+      { id: '10000000-0000-4000-8000-000000000002', name: 'React Conference', year: 2027 },
+    ])
+    const listRegistrations = vi.fn()
+      .mockResolvedValueOnce([{
+        event: { id: '10000000-0000-4000-8000-000000000001', name: 'React Conference', year: 2026 },
+        contact: { name: 'Ana Souza', email: 'ana@example.com', phone: '11999990000' },
+        consent: { consentedAt: '2026-11-02T12:00:00.000Z', privacyNoticeVersion: '2026-11-02' },
+        createdAt: '2026-11-02T12:00:00.000Z',
+      }])
+      .mockReturnValueOnce(nextEvent)
+    const user = userEvent.setup()
+    render(<AdminRegistrationsPage listEvents={listEvents} listRegistrations={listRegistrations} />)
+    await user.type(screen.getByLabelText('Token de acesso'), 'secret-token')
+    await user.click(screen.getByRole('button', { name: /Acessar inscri/ }))
+    expect(await screen.findByText('Ana Souza')).toBeTruthy()
+
+    await user.selectOptions(screen.getByLabelText('Evento'), '10000000-0000-4000-8000-000000000002')
+
+    expect(screen.getByRole('status').textContent).toContain('Carregando inscri')
+    expect(screen.queryByText('Ana Souza')).toBeNull()
+    finishLoading([])
+    expect((await screen.findByRole('status')).textContent).toContain('Ainda n')
+  })
 })

@@ -60,7 +60,7 @@ test('POST /registrations rejects invalid data and missing consent', async () =>
     .expect(400)
 
   assert.equal(response.body.status, 'invalid')
-  assert.match(response.body.message, /revise os dados/i)
+  assert.equal(response.body.message, 'Informe seu nome com pelo menos 2 caracteres.')
 })
 
 test('POST /registrations rejects a privacy notice version that is not current', async () => {
@@ -73,6 +73,17 @@ test('POST /registrations rejects a privacy notice version that is not current',
     .expect(400)
 
   assert.equal(response.body.status, 'invalid')
+  assert.equal(response.body.message, 'O aviso de privacidade foi atualizado. Revise e aceite a versão atual.')
+})
+
+test.each([
+  ['e-mail', { ...validRegistration, contact: { ...validRegistration.contact, email: 'inválido' } }, 'Informe um e-mail válido.'],
+  ['telefone', { ...validRegistration, contact: { ...validRegistration.contact, phone: '123' } }, 'Informe um telefone com DDD para continuar.'],
+  ['evento', { ...validRegistration, eventId: 'inválido' }, 'Selecione um evento válido.'],
+  ['consentimento', { ...validRegistration, consent: { ...validRegistration.consent, accepted: false } }, 'Leia e aceite o aviso de privacidade para continuar.'],
+])('POST /registrations explains how to correct an invalid %s', async (_field, payload, message) => {
+  const response = await request(app.getHttpServer()).post('/registrations').send(payload).expect(400)
+  assert.equal(response.body.message, message)
 })
 
 test('POST /registrations maps unexpected failures to a safe pt-BR response', async () => {
@@ -148,14 +159,24 @@ test('registration requests do not write personal data or secrets to console log
   const log = vi.spyOn(console, 'log').mockImplementation(() => undefined)
   const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
   const error = vi.spyOn(console, 'error').mockImplementation(() => undefined)
-  await request(app.getHttpServer()).post('/registrations').send({
+  const registrationResponse = await request(app.getHttpServer()).post('/registrations').send({
     ...validRegistration,
     contact: { name: 'Pessoa Sigilosa', email: 'segredo@example.com', phone: '551188887777' },
   }).expect(201)
+  await request(app.getHttpServer()).post('/registrations').send({
+    ...validRegistration,
+    contact: { name: 'Pessoa Sigilosa', email: 'email-invalido', phone: '551188887777' },
+  }).expect(400)
+  const adminResponse = await request(app.getHttpServer())
+    .get('/admin/events')
+    .set('authorization', 'Bearer test-admin-token')
+    .expect(200)
   const output = [...log.mock.calls, ...warn.mock.calls, ...error.mock.calls].flat().join(' ')
   log.mockRestore(); warn.mockRestore(); error.mockRestore()
 
   assert.doesNotMatch(output, /Pessoa Sigilosa|segredo@example\.com|551188887777|test-admin-token/)
+  assert.doesNotMatch(JSON.stringify(registrationResponse.body), /Pessoa Sigilosa|segredo@example\.com|551188887777|test-admin-token/)
+  assert.doesNotMatch(JSON.stringify(adminResponse.body), /test-admin-token/)
 })
 
 describe('GET /admin/events/:eventId/registrations', () => {

@@ -10,6 +10,9 @@ import {
 import {
   type EventId,
   isEventId,
+  isValidAttendeeName,
+  isValidEmail,
+  isValidPhone,
   normalizeEmail,
 } from '../../shared/registration-domain.ts'
 import { isCurrentPrivacyNoticeVersion } from '../../content/privacy-notice.ts'
@@ -35,18 +38,26 @@ export class RegistrationsService {
   }
 
   async register(input: RegistrationInput) {
-    if (
-      typeof input.contact?.name !== 'string' || input.contact.name.trim().length < 2 ||
-      typeof input.contact.email !== 'string' || !/^\S+@\S+\.\S+$/.test(input.contact.email.trim()) ||
-      typeof input.contact.phone !== 'string' || input.contact.phone.replace(/\D/g, '').length < 10 ||
-      !isEventId(input.eventId) ||
-      !isCurrentPrivacyNoticeVersion(input.consent?.privacyNoticeVersion) ||
-      input.consent.accepted !== true
-    ) {
-      throw new BadRequestException({
-        status: 'invalid',
-        message: 'Revise os dados informados e aceite o aviso de privacidade.',
-      })
+    const contact = input.contact
+    const consent = input.consent
+
+    if (typeof contact?.name !== 'string' || !isValidAttendeeName(contact.name)) {
+      throw invalidRegistration('Informe seu nome com pelo menos 2 caracteres.')
+    }
+    if (typeof contact.email !== 'string' || !isValidEmail(contact.email)) {
+      throw invalidRegistration('Informe um e-mail válido.')
+    }
+    if (typeof contact.phone !== 'string' || !isValidPhone(contact.phone)) {
+      throw invalidRegistration('Informe um telefone com DDD para continuar.')
+    }
+    if (!isEventId(input.eventId)) {
+      throw invalidRegistration('Selecione um evento válido.')
+    }
+    if (consent?.accepted !== true) {
+      throw invalidRegistration('Leia e aceite o aviso de privacidade para continuar.')
+    }
+    if (!isCurrentPrivacyNoticeVersion(consent.privacyNoticeVersion)) {
+      throw invalidRegistration('O aviso de privacidade foi atualizado. Revise e aceite a versão atual.')
     }
 
     try {
@@ -119,3 +130,7 @@ export class RegistrationsService {
 
 Inject(REGISTRATION_STORE)(RegistrationsService, undefined, 0)
 Injectable()(RegistrationsService)
+
+function invalidRegistration(message: string): BadRequestException {
+  return new BadRequestException({ status: 'invalid', message })
+}

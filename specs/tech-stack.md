@@ -58,6 +58,8 @@ Record selected tools here when they are introduced. Tests should validate user-
 
 Node's test runner remains responsible for the original domain and server-rendered component tests. Vitest, Testing Library, Supertest, and jsdom cover interactive React behavior and the NestJS HTTP boundary. PostgreSQL integration tests run when `TEST_DATABASE_URL` is defined.
 
+Tests normally assert behavior through public interfaces. PostgreSQL adapter integration tests may inspect database state only for persistence invariants that are not observable through HTTP, such as proving that a failed transaction leaves no partial `Person` or `Registration` record.
+
 ## Quality gates
 
 Every phase should leave the repository in a state where:

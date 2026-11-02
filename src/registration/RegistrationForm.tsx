@@ -3,6 +3,9 @@ import { currentEvent } from '../data/events'
 import { registerAttendee, type RegistrationConfirmation, type RegistrationRequest } from './registrationApi'
 import {
   isEventId,
+  isValidAttendeeName,
+  isValidEmail,
+  isValidPhone,
   normalizeEmail,
 } from '../../shared/registration-domain'
 import { currentPrivacyNotice } from '../../content/privacy-notice'
@@ -28,9 +31,9 @@ export function RegistrationForm({ register = registerAttendee }: RegistrationFo
     const email = String(data.get('email') ?? '').trim()
     const phone = String(data.get('phone') ?? '')
     const errors: FieldErrors = {}
-    if (name.length < 2) errors.name = 'Informe seu nome com pelo menos 2 caracteres.'
-    if (!/^\S+@\S+\.\S+$/.test(email)) errors.email = 'Informe um e-mail válido.'
-    if (phone.replace(/\D/g, '').length < 10) errors.phone = 'Informe um telefone com DDD para continuar.'
+    if (!isValidAttendeeName(name)) errors.name = 'Informe seu nome com pelo menos 2 caracteres.'
+    if (!isValidEmail(email)) errors.email = 'Informe um e-mail válido.'
+    if (!isValidPhone(phone)) errors.phone = 'Informe um telefone com DDD para continuar.'
     if (data.get('consent') !== 'on') errors.consent = 'Leia e aceite o aviso de privacidade para continuar.'
     setFieldErrors(errors)
     if (Object.keys(errors).length > 0) {

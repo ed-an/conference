@@ -33,6 +33,16 @@
 9. Consultar um evento sem inscrições e outro com inscrições; confirmar estados claros e apenas os dados necessários.
 10. Inspecionar logs do frontend, da API e do banco durante fluxos de sucesso e erro; confirmar que nenhum dado pessoal ou segredo aparece.
 
+## Evidências executadas em 2026-11-02
+
+- `npm test`, `npm run lint` e `npm run build`: concluídos com sucesso.
+- Migração aplicada em um banco limpo `conference_test`; os dois testes de integração PostgreSQL passaram.
+- Testes de interface capturaram `console.log`, `console.warn` e `console.error` durante falha de rede e não encontraram nome, e-mail, telefone ou detalhe técnico.
+- Testes HTTP cobriram sucesso, validação rejeitada e consulta administrativa; não encontraram dados pessoais nos logs nem credenciais nas respostas.
+- Os logs recentes do PostgreSQL foram inspecionados após os fluxos de sucesso e duplicidade. Eles registraram somente a restrição, identificadores internos e SQL parametrizado, sem nome, e-mail, telefone, token ou valor de consentimento.
+
+As demais verificações da seção manual continuam como roteiro de aceite em navegador e não são substituídas pelos testes automatizados.
+
 ## Verificação de tom
 
 - Todo texto visível está em português do Brasil e usa linguagem simples, acolhedora e profissional.
