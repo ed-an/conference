@@ -10,7 +10,11 @@ import type {
 } from './registration.store.ts'
 
 export class PrismaRegistrationStore implements RegistrationStore {
-  constructor(private readonly prisma: PrismaClient) {}
+  private readonly prisma: PrismaClient
+
+  constructor(prisma: PrismaClient) {
+    this.prisma = prisma
+  }
 
   async create(input: CreateRegistrationRecord): Promise<RegistrationRecord> {
     try {

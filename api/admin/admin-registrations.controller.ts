@@ -3,7 +3,11 @@ import { AdminAuthGuard } from './admin-auth.guard.ts'
 import { RegistrationsService } from '../registrations/registrations.service.ts'
 
 export class AdminRegistrationsController {
-  constructor(private readonly registrations: RegistrationsService) {}
+  private readonly registrations: RegistrationsService
+
+  constructor(registrations: RegistrationsService) {
+    this.registrations = registrations
+  }
 
   list(eventId: string) {
     return this.registrations.listByEvent(eventId)

@@ -5,7 +5,11 @@ import {
 } from './registrations.service.ts'
 
 export class RegistrationsController {
-  constructor(private readonly registrations: RegistrationsService) {}
+  private readonly registrations: RegistrationsService
+
+  constructor(registrations: RegistrationsService) {
+    this.registrations = registrations
+  }
 
   register(input: RegistrationInput) {
     return this.registrations.register(input)

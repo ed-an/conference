@@ -18,7 +18,11 @@ export interface RegistrationInput {
 }
 
 export class RegistrationsService {
-  constructor(private readonly store: RegistrationStore) {}
+  private readonly store: RegistrationStore
+
+  constructor(store: RegistrationStore) {
+    this.store = store
+  }
 
   async register(input: RegistrationInput) {
     if (

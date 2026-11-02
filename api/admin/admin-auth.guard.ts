@@ -9,7 +9,11 @@ export interface AdminAuthTokens {
 export const ADMIN_AUTH_TOKENS = Symbol('ADMIN_AUTH_TOKENS')
 
 export class AdminAuthGuard implements CanActivate {
-  constructor(private readonly tokens: AdminAuthTokens) {}
+  private readonly tokens: AdminAuthTokens
+
+  constructor(tokens: AdminAuthTokens) {
+    this.tokens = tokens
+  }
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<{

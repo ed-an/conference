@@ -59,6 +59,6 @@ test('offers an accessible registration form with explicit consent', () => {
 
   assert.match(page, /<button[^>]*type="submit"[^>]*>Enviar inscrição<\/button>/)
   assert.match(page, /type="checkbox"[^>]*required/)
-  assert.match(page, /Concordo com o uso destes dados/)
+  assert.match(page, /Li e concordo com o aviso de privacidade, versão 2026-11-02/)
   assert.doesNotMatch(page, /envio.*ainda não está disponível/i)
 })
